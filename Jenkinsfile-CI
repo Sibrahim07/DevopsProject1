@@ -8,7 +8,7 @@ pipeline {
     agent any
     // DECLARE THE VARIABLES HERE:
     environment {
-        DOCKER_USERNAME = "hub_creds"     // check the 'ID' in your Jenkins credentials
+        DOCKER_USERNAME = "ibrahim070"     // check the 'ID' in your Jenkins credentials
     }
 
     stages {
@@ -84,14 +84,15 @@ pipeline {
         }
 
         stage('8. Trivy Image Scan') {
-            // Scan Docker images for vulnerabilities 
-            steps{
-                script { 
-                  def JOB = env.JOB_NAME.toLowerCase() // Convert Jenkins Job name to lower-case
-                  sh "trivy image ${DOCKER_USERNAME}/${JOB}:v${BUILD_NUMBER} > scan.txt"
-                }
+            steps {
+                sh '''
+                export TMPDIR=/var/tmp/trivy-tmp
+                trivy image ibrahim070/ci-pipeline:v${BUILD_NUMBER}
+                '''
             }
         }
+        
+        
 
         stage('9. Docker Image Push') {
             // Login to Dockerhub & Push the image to Dockerhub
